@@ -4,3 +4,4 @@ pycaffe对象检测
 
 依赖：
 pycaffe
+![image](https://github.com/maxuehao/caffe-yolo/blob/master/demo.png)
