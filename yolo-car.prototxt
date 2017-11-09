@@ -1,4 +1,3 @@
-name: "yolov2-hi3559-coco"
 input: "data"
 input_shape {
   dim: 1
