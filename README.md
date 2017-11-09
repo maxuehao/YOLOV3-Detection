@@ -4,6 +4,7 @@ pycaffe对象检测
 
 依赖：
 pycaffe
+opencv-python 2.4
 
 ![image](https://github.com/maxuehao/caffe-yolo/blob/master/demo.png)
 
