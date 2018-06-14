@@ -99,15 +99,8 @@ def box(shape, test_img):
 			#根据nms筛选后的box_index保留合适的box
          		draw_box_list.append(draw_list[i])
 	else:
-       		draw_box_list = draw_list
-   	
-	#为box赋予初始id_label
-	global id_num
-   	for i in draw_box_list:
-       		out_list.append([i[0],i[1],i[2],i[3],i[4],i[5],id_num])
-       		id_num += 1
-	
-	return out_list
+       		draw_box_list = draw_list   	
+	return draw_box_list
 
 def draw_box(box_list, fps_num,test_img):
 	color = [(0, 255, 0), (100, 0, 255), (255,195, 0), (200, 240, 0), (255, 195, 0), (100, 0, 255), (200, 0, 255),
@@ -174,21 +167,24 @@ def Kalman():
 
 #读取视频及摄像头函数
 def viedo():
-	cap = cv2.VideoCapture("3.avi")
+	cap = cv2.VideoCapture("drive.avi")
 	fps_num = 0
 	#创建记录k-1时刻的box缓存数组
 	box_buff = []
 	while True:
 		bbox = []
 		ret, test_img = cap.read()
+		start = time.clock()
 		test_img = cv2.resize(test_img,(1280,720),interpolation=cv2.INTER_AREA)
 		shape = load_model(net, test_img)
 		box_list = box(shape, test_img)
-		start = time.clock()
 		print "FPS_NUM:"+str(fps_num)
 		#为缓存数组赋予初始值（缓存k-1时刻的BOX信息）
 		if box_buff == []:
-			box_buff =  box_list
+			for i in box_list:
+				box_buff.append([i[0],i[1],i[2],i[3],i[4],i[5],id_num])
+				global id_num
+				id_num += 1
 		else:
 			#将当前时刻的ｋ的检测框信息依次与K-1时刻的检测框信息做iou计算
 			#如果iou大于设定的阈值，则判断为同一物体id
@@ -203,7 +199,9 @@ def viedo():
 					bbox.append([i[0],i[1],i[2],i[3],i[4],i[5],ID])
 					
 				else:
-		   			bbox.append([i[0],i[1],i[2],i[3],i[4],i[5],i[6]])
+		   			bbox.append([i[0],i[1],i[2],i[3],i[4],i[5],id_num])
+					global id_num
+					id_num += 1
 			#更新缓存数组
 	   		box_buff = bbox
 			#初始化kalman滤波器
@@ -217,7 +215,7 @@ def viedo():
 					current_mes = np.array([[np.float32(x)],[np.float32(y)], [np.float32(w)],[np.float32(h)]])
     					locals()['kalman_'+str(i[6])].correct(current_mes)
     					current_pre = locals()['kalman_'+str(i[6])].predict()
-					print current_pre
+					#print current_pre
 					cpx, cpy, w, h = current_pre[0],current_pre[1],current_pre[2],current_pre[3]
 					#cv2.circle(test_img,(cpx, cpy), 10, (0,0,255), 5)
 					cv2.rectangle(test_img, (int(cpx-0.5*w), int(cpy-0.5*h)), (int(cpx+0.5*w), int(cpy+0.5*h)), (183,0,200), 2)  
@@ -229,15 +227,15 @@ def viedo():
 					current_pre = locals()['kalman_'+str(i[6])].predict()
 	
 			
-	   	end = time.clock()
-		#opncv画框
-           	draw_box(bbox, fps_num, test_img)
-           	print "SPEND_TIME:"+str(end-start)
-           	print "=============="
+	   		end = time.clock()
+			#opncv画框
+           		draw_box(bbox, fps_num, test_img)
+           		print "SPEND_TIME:"+str(end-start)
+           		print "=============="
         	fps_num += 1
         	cv2.imshow("capture", test_img)
         	if cv2.waitKey(1) & 0xFF == ord('q'):
-            		break
+        		break
 	cap.release()
 	cv2.destroyAllWindows()
 
