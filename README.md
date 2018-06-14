@@ -1,6 +1,6 @@
 # Ｋalman-yolov2
 pycaffe对象检测
-基于pycaffe的YOLOv2交通场景目标实时检测程序
+基于pycaffe的YOLOv2及kalman多目标跟踪交通场景目标实时检测程序
 
 依赖：
 pycaffe
