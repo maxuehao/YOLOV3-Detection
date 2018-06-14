@@ -116,7 +116,7 @@ def draw_box(box_list, fps_num,test_img):
          		continue
       		temp += 1
       		#cv2.rectangle(test_img, (i[0], i[1]), (i[2], i[3]), color[i[5]], 3)
-      		cv2.putText(test_img, str(i[6]), (i[0], i[1] - 8), 0, 1, (0, 0, 255), 2)
+      		#cv2.putText(test_img, str(i[6]), (i[0], i[1] - 8), 0, 1, (0, 0, 255), 2)
       		#print [classes[i[5]], i[4], i[0], i[1], i[2], i[3]]
 
 #计算两个BOX的IOU重合程度
@@ -156,7 +156,7 @@ def Kalman():
 
 	#过程噪声协方差矩阵 process noise covariance matrix (Q)
 	kalman.processNoiseCov = np.array([ [1,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,0,1,0,0,0,0],
-					    [0,0,0,0,1,0,0,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,1]], np.float32)*1e-5
+					    [0,0,0,0,1,0,0,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,1]], np.float32)*1e-4
 	#先验误差计协方差矩阵 priori error estimate covariance matrix (P'(k)): P'(k)=A*P(k-1)*At + Q)
 	kalman.errorCovPre = np.array([[1,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,0,1,0,0,0,0],
 					    [0,0,0,0,1,0,0,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,1]], np.float32)*1000	
@@ -167,7 +167,7 @@ def Kalman():
 
 #读取视频及摄像头函数
 def viedo():
-	cap = cv2.VideoCapture("drive.avi")
+	cap = cv2.VideoCapture("NORM0006.MP4")
 	fps_num = 0
 	#创建记录k-1时刻的box缓存数组
 	box_buff = []
@@ -202,10 +202,9 @@ def viedo():
 		   			bbox.append([i[0],i[1],i[2],i[3],i[4],i[5],id_num])
 					global id_num
 					id_num += 1
-			#更新缓存数组
-	   		box_buff = bbox
+
 			#初始化kalman滤波器
-			for i in bbox:
+			for i in box_buff:
 				x = int(i[0]+0.5*(i[2]-i[0]))  
 				y = int(i[1]+0.5*(i[3]-i[1]))
 				w = i[2]-i[0]
@@ -226,7 +225,8 @@ def viedo():
 					locals()['kalman_'+str(i[6])].correct(current_mes)
 					current_pre = locals()['kalman_'+str(i[6])].predict()
 	
-			
+			#更新缓存数组
+	   		box_buff = bbox
 	   		end = time.clock()
 			#opncv画框
            		draw_box(bbox, fps_num, test_img)
