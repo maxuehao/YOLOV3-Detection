@@ -1,6 +1,5 @@
 ## YOLOV3-Detection
-基于Pycaffe的YOLOV3目标检测程序
-
+Object detection program based on PyCaffe and YoloV3
 
 ## Environmental requirements
 1.Python2.7<br>2.python-opencv3.Caffe(add upsample layer https://github.com/maxuehao/caffe)<br>
