@@ -108,25 +108,24 @@ def dect_box_handle(out_shape, test_img):
 if __name__ == "__main__":
 	FPS = 0
 	#类别数目
-	CLASS_NUM = 1
+	CLASS_NUM = 9
 	#输入图片尺寸	
-	INPUT_SIZE = 512	
+	INPUT_SIZE = 416	
 	#加载label文件
 	LABEL_NAMES = []
 	with open('label.names', 'r') as f:
 	   for line in f.readlines():
 	      LABEL_NAMES.append(line.strip())
 	#置信度
-	CONFIDENCE_DICT = {"16":0.65, "32":0.55, "64":0.55} 
+	CONFIDENCE_DICT = {"13":0.6, "26":0.5, "52":0.4} 
 	#模型训练时设置的anchor_box比例
-	# 9, 12,  20, 25,  31, 50,  51, 35,  53, 74, 102, 64,  78,125, 161,178, 288,311
-	BIAS_W = [9, 20,  31, 51,  53,  102, 78, 161, 288]
-	BIAS_H = [12, 25,  50, 35, 74, 64, 125, 178, 311]
+	bias_w = [10, 16, 33, 30, 62, 59, 116, 156, 372]
+	bias_h = [13, 30, 23, 61, 45, 119, 90, 198, 362]
 	#需要输出的３层feature_map的名称
-	feature_conv_name = ["layer56-conv","layer66-conv","layer76-conv"]
+	feature_conv_name = ["layer44-conv","layer56-conv","layer68-conv"]
 	caffe.set_mode_gpu()
 	#加载检测模型
-	net = caffe.Net('MODEL/HiNNIE_yolov3_hand.prototxt', 'MODEL/HiNNIE_yolov3_hand.caffemodel', caffe.TEST)
+	net = caffe.Net('YOLOV3.prototxt', 'yolov3_res18.caffemodel', caffe.TEST)
 	cap = cv2.VideoCapture(0)
 	cap.set(3,1920) #设置分辨率
 	cap.set(4,1080)
