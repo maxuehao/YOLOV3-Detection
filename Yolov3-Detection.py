@@ -119,8 +119,8 @@ if __name__ == "__main__":
 	#置信度
 	CONFIDENCE_DICT = {"13":0.6, "26":0.5, "52":0.4} 
 	#模型训练时设置的anchor_box比例
-	bias_w = [10, 16, 33, 30, 62, 59, 116, 156, 372]
-	bias_h = [13, 30, 23, 61, 45, 119, 90, 198, 362]
+	BIAS_W = [10, 16, 33, 30, 62, 59, 116, 156, 372]
+	BIAS_H = [13, 30, 23, 61, 45, 119, 90, 198, 362]
 	#需要输出的３层feature_map的名称
 	feature_conv_name = ["layer44-conv","layer56-conv","layer68-conv"]
 	caffe.set_mode_gpu()
